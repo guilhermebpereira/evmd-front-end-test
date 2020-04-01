@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import PropTypes from "prop-types";
 import { UserCard } from "../../components";
 import * as SQLite from "expo-sqlite";
@@ -8,13 +9,12 @@ const db = SQLite.openDatabase("front-end-test.db");
 
 const Home = ({ navigation }) => {
   const [userList, setUserList] = useState([]);
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     db.transaction(tx => {
       tx.executeSql(
-        `select name, age, email, picture from users;`,
+        `SELECT _id, name, age, email, latitude, longitude, balance, favorite, picture FROM users ORDER BY favorite DESC;`,
         [],
         (_, { rows: { _array } }) => {
           setUserList(_array);
@@ -34,14 +34,31 @@ const Home = ({ navigation }) => {
       ) : (
         <ScrollView>
           {userList.map((item, i = 1) => (
-            <View key={i++} style={styles.container}>
-              <UserCard 
+            <View
+              key={i++}
+              style={
+                item.favorite === 0
+                  ? styles.container
+                  : styles.containerFavorited
+              }
+            >
+              <UserCard
                 name={item.name.toString()}
                 age={item.age.toString()}
                 email={item.email.toString()}
                 picture={item.picture}
                 onPress={() => {
-                  navigation.navigate("Details");
+                  navigation.navigate("Details", {
+                    id: item._id,
+                    name: item.name,
+                    age: item.age,
+                    email: item.email,
+                    latitude: item.latitude,
+                    longitude: item.longitude,
+                    balance: item.balance,
+                    picture: item.picture,
+                    favorite: item.favorite
+                  });
                 }}
               />
             </View>
@@ -60,7 +77,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 15,
+    paddingVertical: 15,
     backgroundColor: "#f3f3f3",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  containerFavorited: {
+    flex: 1,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    backgroundColor: "#c2c2c2",
     alignItems: "center",
     justifyContent: "center"
   }
