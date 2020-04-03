@@ -7,24 +7,24 @@ import PropTypes from 'prop-types';
 const UserCard = ({
   name, email, age, picture, onPress,
 }) => (
-  <TouchableOpacity style={styles.container} onPress={onPress}>
-    <View>
-      <Image
-        source={{ uri: picture }}
-        style={styles.image}
-      />
-    </View>
-    <View>
-      <Text>{`${name}, ${age}`}</Text>
-      <Text>{email}</Text>
-    </View>
-  </TouchableOpacity>
-);
+    <TouchableOpacity style={styles.container} onPress={onPress}>
+      <View>
+        <Image
+          source={{ uri: picture }}
+          style={styles.image}
+        />
+      </View>
+      <View style={{ flex: 2, marginLeft: 15 }}>
+        <Text>{`${name}, ${age}`}</Text>
+        <Text>{email}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
 UserCard.propTypes = {
   name: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
-  age: PropTypes.string.isRequired,
+  age: PropTypes.number.isRequired,
   picture: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
 };
