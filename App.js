@@ -1,6 +1,7 @@
-import React, { useEffect, useCallback } from 'react';
-import { CreateDatabase } from './src/scripts';
-import Routes from './src/routes';
+import React, { useEffect, useCallback } from "react";
+import { CreateDatabase } from "./src/scripts";
+import { downloadDatabase } from "./src/Database";
+import Routes from "./src/routes";
 
 export default function App() {
   const initializeDB = useCallback(async () => {
@@ -9,9 +10,8 @@ export default function App() {
 
   useEffect(() => {
     initializeDB();
+    downloadDatabase();
   }, []);
 
-  return (
-    <Routes />
-  );
+  return <Routes />;
 }
