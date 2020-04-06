@@ -1,37 +1,69 @@
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   View, Image, StyleSheet, Text, TouchableOpacity,
 } from 'react-native';
 
-const Details = () => (
-  <View style={styles.container}>
-    <View>
-      <Image
-        source={{
-          uri: 'http://placehold.it/1024x1024',
-        }}
-        style={styles.image}
-      />
+function Details() {
+  const dispatch = useDispatch();
+  const details = useSelector((state) => state.user);
+
+  return (
+    <View style={styles.container}>
+      <View>
+        <Image
+          source={{
+            uri: details.picture,
+          }}
+          style={styles.image}
+        />
+      </View>
+      <View
+        style={styles.detailsContainer}
+      >
+        <Text>
+          Nome:
+          {' '}
+          {details.name}
+        </Text>
+        <Text>
+          E-mail:
+          {' '}
+          {details.email}
+        </Text>
+        <Text>
+          Idade:
+          {' '}
+          {details.age}
+        </Text>
+        <Text>
+          Salário:
+          {' '}
+          {details.balance}
+        </Text>
+        <Text>
+          Latitude:
+          {' '}
+          {details.latitude}
+        </Text>
+        <Text>
+          Longitude:
+          {' '}
+          {details.longitude}
+        </Text>
+      </View>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => dispatch({ type: 'SET_FAVORITE', user: (details.favorite === 0 ? { ...details, favorite: 1 } : { ...details, favorite: 0 }) })}
+      >
+        <Text>
+          {details.favorite === 0 ? 'Favoritar' : 'Desfavoritar'}
+        </Text>
+      </TouchableOpacity>
     </View>
-    <View
-      style={styles.detailsContainer}
-    >
-      <Text>Nome: Ighor</Text>
-      <Text>E-mail: email@email.com</Text>
-      <Text>Idade: 23</Text>
-      <Text>Salário: 1,767.09</Text>
-      <Text>Latitude: 66.701576</Text>
-      <Text>Longitude: 178.865541</Text>
-    </View>
-    <TouchableOpacity
-      style={styles.button}
-    >
-      <Text>
-        Favorito
-      </Text>
-    </TouchableOpacity>
-  </View>
-);
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -54,12 +86,12 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 5,
+    marginTop: 10,
     padding: 10,
-    marginTop: 15,
     borderWidth: 1,
     borderColor: '#b1b1b1',
     backgroundColor: '#e5e5e5',
+    alignItems: 'center',
   },
 });
-
 export default Details;

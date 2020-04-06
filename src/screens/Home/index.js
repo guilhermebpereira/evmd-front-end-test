@@ -1,24 +1,54 @@
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import * as SQLite from 'expo-sqlite';
+import { useDispatch, useSelector } from 'react-redux';
+
+import {
+  View, StyleSheet, FlatList,
+} from 'react-native';
 import PropTypes from 'prop-types';
 
 import { UserCard } from '../../components';
 
-const Home = ({ navigation }) => (
-  <View
-    style={styles.container}
-  >
-    <UserCard
-      name="Ighor"
-      age="23"
-      email="email@email.com.br"
-      picture="http://placehold.it/1024x1024"
-      onPress={() => {
-        navigation.navigate('Details');
-      }}
-    />
-  </View>
-);
+
+function Home({ navigation }) {
+  const db = SQLite.openDatabase('front-end-test.db');
+  const users = useSelector((state) => state.users);
+  const dispatch = useDispatch();
+
+  function getUser() {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'select * from users ;',
+        [],
+        (_, { rows: { _array } }) => dispatch({ type: 'SET_USERS', users: _array }),
+      );
+    });
+  }
+
+  React.useEffect(() => {
+    getUser();
+  }, []);
+
+  return (
+    <View
+      style={styles.container}
+    >
+      <FlatList
+        data={users}
+        keyExtractor={(item) => (item._id)}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <UserCard
+            key={item._id}
+            data={item}
+            onPress={() => navigation.navigate('Details')}
+          />
+        )}
+      />
+    </View>
+  );
+}
 
 Home.propTypes = {
   navigation: PropTypes.oneOfType([PropTypes.object]).isRequired,
